@@ -1,0 +1,28 @@
+---
+- name: "install WP"
+  hosts: wordpress
+  become: yes
+
+  vars_files:
+    - files/secret/credentials.yml
+
+  tasks:
+    - name: "Download, Unarchive & chown WP in www/html"
+      ansible.builtin.unarchive:
+        remote_src: yes
+        src: "http://WordPress.org/latest.tar.gz"
+        dest: /var/www/html
+        owner: "apache"
+        group: "apache"
+   
+    - name: "fichier wp-config.php"
+      vars:
+        mysql_db: "{{ DB }}"
+        mysql_user: "{{ SQLuser }}"
+        mysql_password: "{{ SQLuser_pw }}"
+      ansible.builtin.template:
+        src: files/wp-config.php.j2
+        dest: /var/www/html/wp-config.php
+        owner: "apache"
+        group: "apache"
+

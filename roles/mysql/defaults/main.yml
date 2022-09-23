@@ -1,0 +1,9 @@
+---
+# defaults file for mysql
+
+DB: NotMongoDB
+
+sudo_pass: rootpw
+
+SQLuser: user
+SQLuser_pw: userpw

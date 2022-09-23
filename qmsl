@@ -1,0 +1,40 @@
+---
+- name: "MySQL"
+  hosts: mysql
+  become: yes
+
+  vars:
+    system_user: vagrant
+    ansible_python_interpreter: /usr/bin/python3
+
+  vars_files:
+    - files/secret/credentials.yml
+
+  pre_tasks:
+    - name: "Install pre-req"
+      yum:
+        name: "{{ item }}"
+        state: latest
+      loop:
+        - yum-utils
+        - python3
+
+  tasks:
+    - name: "Installing MySQL"
+      apt: name=mysql update_cache=yes cache_valid_time=3600 state=present
+
+    - name: "Start MySQL"
+      shell: "service mysql start"
+
+    - name: "Check SQL is up"
+      service: name=mysql state=started enabled=true
+
+    - name: "MySQL roots pw update"
+      mysql_user:
+        name: "root"
+        host: "{{ item }}" 
+        password: "{{ sudo_pass }}"
+        login_user: root
+        login_password: "{{ sudo_pass }}"
+        check_implicit_adin: yes
+        priv: "*.*:ALL,GRANT"

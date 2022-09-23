@@ -1,0 +1,8 @@
+---
+# defaults file for wordpress
+
+WP_archive: "http://WordPress.org/latest.tar.gz"
+
+DB: NotMongoDB
+SQLuser: user
+SQLuser_pw: userpw

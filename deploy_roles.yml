@@ -1,0 +1,12 @@
+---
+- name: "Deploy WP throught roles"
+  hosts: all
+  become: yes
+  vars_files:
+    - files/secret/credentials.yml
+
+
+  roles:
+    - php
+    - mysql
+    - wordpress

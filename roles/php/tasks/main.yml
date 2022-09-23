@@ -1,0 +1,46 @@
+---
+# tasks file for php
+
+    - name: "yum & remi update"
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - yum-utils
+        - httpd
+        - "{{ remi }}"
+
+    - name: "start & enable Apache"
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: "Open port https"
+      firewalld:
+        service: https
+        permanent: yes
+        state: enabled
+
+    - name: "Install PHP"
+      yum:
+        enablerepo: "remi-php74"
+        name:
+          - php
+          - php-bz2
+          - php-mysql
+          - php-curl
+          - php-gd
+          - php-intl
+          - php-common
+          - php-mbstring
+          - php-xml
+        state: present
+
+    - name: "Restart Apache"
+      service:
+        name: httpd
+        state: restarted
+
+
+

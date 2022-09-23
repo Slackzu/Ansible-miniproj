@@ -1,0 +1,57 @@
+---
+- name: "MySQL"
+  hosts: mysql
+  become: yes
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  vars_files:
+    - files/secret/credentials.yml
+
+  pre_tasks:
+    - name: "Install Pre-requisites"
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - yum-utils
+        - python3
+        - mariadb-server
+
+    - name: "install pymysql"
+      package:
+        name: python3-PyMySQL
+        state: present
+
+    - name: "Start/enable MariaDB"
+      ansible.builtin.systemd:
+        name: "mariadb.service"
+        state: started
+        enabled: yes
+
+  tasks:
+    - name: "Create a new DB"
+      community.mysql.mysql_db:
+        name: "{{ DB }}"
+        state: present
+        login_user: root
+        
+    - name: "Create DB user"
+      community.mysql.mysql_user:
+        login_user: root
+        name: "{{ SQLuser }}"
+        password: "{{ SQLuser_pw }}"
+        priv: "{{ DB }}.*:ALL"
+        state: present
+
+    - name: "change root pw & only local login"
+      community.mysql.mysql_user:
+        check_implicit_admin: true
+        login_user: root
+        login_password: "{{ sudo_pass }}"
+        user: root
+        password: "{{ sudo_pass }}"
+        host: localhost
+        state: absent
+

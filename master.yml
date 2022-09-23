@@ -1,0 +1,9 @@
+---
+- name: "Install MySQL"
+  import_playbook: mysql.yml
+
+- name: "Install PHP"
+  import_playbook: php.yml
+
+- name: "Install Wordpress"
+  import_playbook: wordpress.yml

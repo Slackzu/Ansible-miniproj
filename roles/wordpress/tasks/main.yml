@@ -1,0 +1,23 @@
+---
+# tasks file for wordpress
+
+    - name: "Download & Unarchive WP in www/html"
+      ansible.builtin.unarchive:
+        remote_src: yes
+        src: "{{ WP_archive }}"
+        dest: /var/www/html
+        owner: "apache"
+        group: "apache"
+
+    - name: "fichier wp-config.php"
+      vars:
+        mysql_db: "{{ DB }}"
+        mysql_user: "{{ SQLuser }}"
+        mysql_password: "{{ SQLuser_pw }}"
+      ansible.builtin.template:
+        src: defaults/wp-config.php.j2
+        dest: /var/www/html/wp-config.php
+        owner: "apache"
+        group: "apache"
+
+
